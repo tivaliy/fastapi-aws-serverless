@@ -1,0 +1,5 @@
+[flake8]
+# E203 - whitespace before ':'
+ignore = E203
+max-line-length = 100
+exclude = .git,__pycache__,__init__.py,.mypy_cache,.pytest_cache

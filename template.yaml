@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Description: >
+  FastAPI Serverless
+
+  Sample SAM Template for FastAPI
+
+
+Parameters:
+  EnvType:
+    Type: String
+    Description: Environment type.
+    Default: dev
+    AllowedValues: [dev, prod]
+    ConstraintDescription : Must specify dev or prod.
+
+Resources:
+  FastAPIGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref EnvType
+      OpenApiVersion: '3.0.0'
+
+  FastAPILambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: root
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:*
+            Resource: arn:aws:logs:*:*:*
+
+  FastAPIApp:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: python3.9
+      Timeout: 300
+      CodeUri: ./
+      Handler: app.main.handler
+      Description: fastAPI AWS lambda example
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref FastAPIGateway
+            Path: /{proxy+}
+            Method: ANY
+      Role: !GetAtt FastAPILambdaExecutionRole.Arn
+
+Outputs:
+  FastAPI:
+    Description: API Gateway endpoint URL
+    Value: !Sub https://${FastAPIGateway}.execute-api.${AWS::Region}.amazonaws.com/${EnvType}
