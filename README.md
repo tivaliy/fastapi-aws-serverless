@@ -72,6 +72,8 @@ Service will be available on the following routes:
 
 ## Delete the Stack
 
+For deleting the Stack run:
+
     sam delete --stack-name your-stack-name
 
 
