@@ -15,7 +15,66 @@ Parameters:
     AllowedValues: [dev, prod]
     ConstraintDescription : Must specify dev or prod.
 
+  DomainName:
+      Type: String
+      Description: API Domain name
+      Default: ''
+
+Conditions:
+  UseDomainName:
+    !Not
+      - !Equals
+        - !Ref DomainName
+        - ''
+
 Resources:
+  Route53HostedZone:
+    Type: AWS::Route53::HostedZone
+    Condition: UseDomainName
+    Properties:
+      Name: !Ref DomainName
+
+  ApiCertificateDomain:
+    Type: AWS::CertificateManager::Certificate
+    Condition: UseDomainName
+    Properties:
+      DomainName: !Sub '*.${DomainName}'
+      DomainValidationOptions:
+        - DomainName: !Ref DomainName
+          HostedZoneId: !Ref Route53HostedZone
+      ValidationMethod: DNS
+      SubjectAlternativeNames:
+        - !Ref DomainName
+
+  ApiDomainName:
+    Type: AWS::ApiGateway::DomainName
+    Condition: UseDomainName
+    Properties:
+      CertificateArn: !Ref ApiCertificateDomain
+      DomainName: !Ref DomainName
+
+  ApiRoute53RecordSetGroup:
+    Type: AWS::Route53::RecordSetGroup
+    Condition: UseDomainName
+    Properties:
+      HostedZoneId: !Ref Route53HostedZone
+      RecordSets:
+        - Name: !Sub ${DomainName}.
+          Type: A
+          AliasTarget:
+            EvaluateTargetHealth: false
+            HostedZoneId: !GetAtt ApiDomainName.DistributionHostedZoneId
+            DNSName: !GetAtt ApiDomainName.DistributionDomainName
+
+  ApiBasePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Condition: UseDomainName
+    Properties:
+      RestApiId: !Ref FastAPIGateway
+      DomainName: !Ref ApiDomainName
+      BasePath: '(none)'
+      Stage: !Ref EnvType
+
   FastAPIGateway:
     Type: AWS::Serverless::Api
     Properties:
