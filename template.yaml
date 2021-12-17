@@ -16,9 +16,16 @@ Parameters:
     ConstraintDescription : Must specify dev or prod.
 
   DomainName:
-      Type: String
-      Description: API Domain name
-      Default: ''
+    Type: String
+    Description: API Domain name.
+    Default: ''
+
+  HostedZoneIdValue:
+    # We cannot use optional parameter in CloudFormation for AWS Specific Parameters
+    # Type: AWS::Route53::HostedZone::Id
+    Type: String
+    Description: Route 53 Hosted zonde ID value.
+    Default: ''
 
 Conditions:
   UseDomainName:
@@ -26,11 +33,24 @@ Conditions:
       - !Equals
         - !Ref DomainName
         - ''
+  UseExistingHoztedZone:
+    !Not
+      - !Equals
+        - !Ref HostedZoneIdValue
+        - ''
+  NotUseExistingHoztedZone:
+    !Not
+      - Condition: UseExistingHoztedZone
+  CreateNewHostedZone:
+    !And
+      - !Condition UseDomainName
+      - !Condition NotUseExistingHoztedZone
+
 
 Resources:
   Route53HostedZone:
     Type: AWS::Route53::HostedZone
-    Condition: UseDomainName
+    Condition: CreateNewHostedZone
     Properties:
       Name: !Ref DomainName
 
@@ -41,7 +61,7 @@ Resources:
       DomainName: !Sub '*.${DomainName}'
       DomainValidationOptions:
         - DomainName: !Ref DomainName
-          HostedZoneId: !Ref Route53HostedZone
+          HostedZoneId: !If [UseExistingHoztedZone, !Ref HostedZoneIdValue , !Ref Route53HostedZone]
       ValidationMethod: DNS
       SubjectAlternativeNames:
         - !Ref DomainName
@@ -57,7 +77,7 @@ Resources:
     Type: AWS::Route53::RecordSetGroup
     Condition: UseDomainName
     Properties:
-      HostedZoneId: !Ref Route53HostedZone
+      HostedZoneName: !Sub ${DomainName}.
       RecordSets:
         - Name: !Sub ${DomainName}.
           Type: A
