@@ -8,3 +8,6 @@ mangum==0.12.3  #  https://github.com/jordaneremieff/mangum
 
 pydantic==1.8.2  # https://github.com/samuelcolvin/pydantic
 uvicorn==0.16.0  # https://github.com/encode/uvicorn
+
+# Logging
+loguru==0.5.3  # https://github.com/Delgan/loguru
