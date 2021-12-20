@@ -41,17 +41,12 @@ async def set_root_path_for_api_gateway(request: Request, call_next):
         if "aws.event" in request.scope:
             context = request.scope["aws.event"]["requestContext"]
 
-            if "customDomain" not in context:
-                # Only works for stage deployments currently
-                root_path = f"/{context['stage']}"
-
-                if request.scope["path"].startswith(root_path):
-                    request.scope["path"] = request.scope["path"][len(root_path) :]
-                request.scope["root_path"] = root_path
-                app.root_path = root_path
-
-                # NOT IMPLEMENTED FOR customDomain
-                # root_path = f"/{context['customDomain']['basePathMatched']}"
+            if "pathParameters" in request.scope["aws.event"]:
+                path_parameters = request.scope["aws.event"]["pathParameters"]
+                if path_parameters is not None and "proxy" in path_parameters:
+                    request.scope["path"] = f"/{path_parameters['proxy']}"
+                    root_path = context["path"][: context["path"].find(path_parameters["proxy"])]
+                    request.scope["root_path"] = root_path
 
     response = await call_next(request)
     return response
