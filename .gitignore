@@ -30,3 +30,7 @@ MANIFEST
 # Ignore AWS SAM
 .aws-sam/
 samconfig.toml
+
+# Ignor .env files
+.env
+.prod.env

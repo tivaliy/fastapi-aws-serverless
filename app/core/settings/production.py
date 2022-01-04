@@ -7,4 +7,4 @@ class ProdAppSettings(AppSettings):
     """
 
     class Config(AppSettings.Config):
-        env_file = "prod.env"
+        env_file = ".prod.env"
