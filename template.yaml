@@ -95,11 +95,66 @@ Resources:
       BasePath: '(none)'
       Stage: !Ref EnvType
 
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub ${AWS::StackName}-user-pool
+      AutoVerifiedAttributes:
+        - email
+      UsernameAttributes:
+        - email
+      UsernameConfiguration:
+        CaseSensitive: false
+      Policies:
+        PasswordPolicy:
+          RequireLowercase: true
+          RequireSymbols: false
+          RequireNumbers: true
+          MinimumLength: 8
+          RequireUppercase: true
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          -
+            Name: verified_email
+            Priority: 1
+      EmailConfiguration:
+          EmailSendingAccount: COGNITO_DEFAULT
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Sub ${AWS::StackName}-app
+      UserPoolId: !Ref CognitoUserPool
+      SupportedIdentityProviders:
+        - COGNITO
+      PreventUserExistenceErrors: ENABLED
+      ExplicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      ReadAttributes:
+        - email
+        - email_verified
+      WriteAttributes:
+        - email
+
   FastAPIGateway:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref EnvType
       OpenApiVersion: '3.0.0'
+      # There is an issue with conditions in the Auth section, so Cognito is a mandatory part of
+      # the current Stack for a while, see
+      # https://github.com/aws/serverless-application-model/issues/1435
+      # https://github.com/aws/serverless-application-model/issues/1955
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt CognitoUserPool.Arn
+            Identity: # OPTIONAL
+              Header: Authorization # OPTIONAL; Default: 'Authorization'
+
 
   FastAPILambdaExecutionRole:
     Type: AWS::IAM::Role
@@ -145,3 +200,9 @@ Outputs:
   FastAPI:
     Description: API Gateway endpoint URL
     Value: !Sub https://${FastAPIGateway}.execute-api.${AWS::Region}.amazonaws.com/${EnvType}
+  CognitoUserPoolId:
+    Description: Cognito User Pool ID
+    Value: !Ref CognitoUserPool
+  CognitoAppClientId:
+    Description: Cognito App Client ID
+    Value: !Ref UserPoolClient
