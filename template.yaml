@@ -143,10 +143,6 @@ Resources:
     Properties:
       StageName: !Ref EnvType
       OpenApiVersion: '3.0.0'
-      # There is an issue with conditions in the Auth section, so Cognito is a mandatory part of
-      # the current Stack for a while, see
-      # https://github.com/aws/serverless-application-model/issues/1435
-      # https://github.com/aws/serverless-application-model/issues/1955
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
         Authorizers:
@@ -194,6 +190,13 @@ Resources:
             RestApiId: !Ref FastAPIGateway
             Path: /{proxy+}
             Method: ANY
+            Auth:
+              # FastAPI app is responsible for auth, not AWS
+              Authorizer: NONE
+      Environment:
+        Variables:
+          USERPOOL_ID: !Ref CognitoUserPool
+          APP_CLIENT_ID: !Ref UserPoolClient
       Role: !GetAtt FastAPILambdaExecutionRole.Arn
 
 Outputs:

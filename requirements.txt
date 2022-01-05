@@ -12,3 +12,6 @@ python-dotenv==0.19.2  # https://github.com/theskumar/python-dotenv
 
 # Logging
 loguru==0.5.3  # https://github.com/Delgan/loguru
+
+# Cognito Auth
+fastapi-cloudauth==0.4.2  # https://github.com/tokusumi/fastapi-cloudauth

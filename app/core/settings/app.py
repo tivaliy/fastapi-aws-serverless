@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 from typing import Any, Dict, Tuple
 
@@ -20,6 +21,11 @@ class AppSettings(BaseAppSettings):
 
     logging_level: int = logging.INFO
     loggers: Tuple[str, str] = ("uvicorn.asgi", "uvicorn.access")
+
+    # Cognito settings
+    aws_region: str = os.getenv("AWS_REGION")
+    userpool_id: str = os.getenv("USERPOOL_ID")
+    app_client_id: str = os.getenv("APP_CLIENT_ID")
 
     class Config:
         validate_assignment = True

@@ -1,12 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from fastapi_cloudauth.cognito import CognitoClaims
+
+from app.api.deps import get_current_user
 
 router = APIRouter()
 
 
-@router.get("/me")
-def read_user_me():
-    return {
-        "id": "8eaae36f-01fc-434f-b19f-93754e0b87a8",
-        "given_name": "John",
-        "family_name": "Doe",
-    }
+@router.get("/me", response_model=CognitoClaims)
+def read_user_me(current_user: CognitoClaims = Depends(get_current_user)) -> CognitoClaims:
+    return current_user
