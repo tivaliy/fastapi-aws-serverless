@@ -93,7 +93,6 @@ Resources:
       RestApiId: !Ref FastAPIGateway
       DomainName: !Ref ApiDomainName
       BasePath: '(none)'
-      Stage: !Ref EnvType
 
   CognitoUserPool:
     Type: AWS::Cognito::UserPool
