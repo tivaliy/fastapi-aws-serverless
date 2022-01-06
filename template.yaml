@@ -93,6 +93,7 @@ Resources:
       RestApiId: !Ref FastAPIGateway
       DomainName: !Ref ApiDomainName
       BasePath: '(none)'
+      Stage: !Ref EnvType
 
   CognitoUserPool:
     Type: AWS::Cognito::UserPool
@@ -142,6 +143,10 @@ Resources:
     Properties:
       StageName: !Ref EnvType
       OpenApiVersion: '3.0.0'
+      # This property is not working properly right now, see
+      # https://github.com/aws/serverless-application-model/issues/1978
+      # https://github.com/aws/serverless-application-model/issues/2270
+      DisableExecuteApiEndpoint: !If [UseDomainName, true, false]
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
         Authorizers:
