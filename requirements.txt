@@ -1,6 +1,6 @@
 # FastAPI
 # --------------------------------------------------------------------------------------------------
-fastapi==0.70.1  # https://github.com/tiangolo/fastapi
+fastapi==0.71.0  # https://github.com/tiangolo/fastapi
 fastapi-mqtt==0.4.0  # https://github.com/sabuhish/fastapi-mqtt
 
 # Adapter for using ASGI applications with AWS Lambda & API Gateway
@@ -14,4 +14,4 @@ python-dotenv==0.19.2  # https://github.com/theskumar/python-dotenv
 loguru==0.5.3  # https://github.com/Delgan/loguru
 
 # Cognito Auth
-fastapi-cloudauth==0.4.2  # https://github.com/tokusumi/fastapi-cloudauth
+fastapi-cloudauth==0.4.3  # https://github.com/tokusumi/fastapi-cloudauth
