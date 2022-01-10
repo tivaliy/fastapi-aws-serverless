@@ -10,7 +10,7 @@ from app.tests.utils.users import create_random_user
 router = APIRouter()
 
 
-@router.get("", response_model=List[schemas.User], dependencies=[Depends(auth.scope(["admin"]))])
+@router.get("", response_model=List[schemas.User], dependencies=[Depends(auth.scope(["admins"]))])
 def read_users():
     # Generate fake user list
     return [create_random_user() for _ in range(5)]
