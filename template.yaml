@@ -27,6 +27,11 @@ Parameters:
     Description: Route 53 Hosted zonde ID value.
     Default: ''
 
+  AdminsGroupName:
+    Type: String
+    Description: Cognito group name for Administrators
+    Default: admins
+
 Conditions:
   UseDomainName:
     !Not
@@ -119,6 +124,13 @@ Resources:
             Priority: 1
       EmailConfiguration:
           EmailSendingAccount: COGNITO_DEFAULT
+
+  CognitoUserPoolGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: !Ref AdminsGroupName
+      Description: Administrators Group
+      UserPoolId: !Ref CognitoUserPool
 
   UserPoolClient:
     Type: AWS::Cognito::UserPoolClient
