@@ -1,7 +1,7 @@
 import uuid
 
 from app.schemas import User
-from app.tests.utils.utils import random_email
+from app.tests.helpers.utils import random_email
 
 
 def create_random_user() -> User:

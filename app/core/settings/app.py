@@ -19,6 +19,8 @@ class AppSettings(BaseAppSettings):
     title: str = "AWS Serverless FastAPI application"
     version: str = "0.0.1"
 
+    jwt_token_prefix: str = "Bearer"
+
     logging_level: int = logging.INFO
     loggers: Tuple[str, str] = ("uvicorn.asgi", "uvicorn.access")
 

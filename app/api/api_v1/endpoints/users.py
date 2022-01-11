@@ -5,7 +5,7 @@ from fastapi_cloudauth.cognito import CognitoClaims
 
 from app import schemas
 from app.api.deps import auth, get_current_user
-from app.tests.utils.users import create_random_user
+from app.tests.helpers.users import create_random_user
 
 router = APIRouter()
 
