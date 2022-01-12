@@ -2,13 +2,15 @@ from fastapi import FastAPI, Request
 from mangum import Mangum
 
 from app.api.api_v1.api import api_router
-from app.core.config import settings
+from app.core.config import get_app_settings
 
 
 def create_application() -> FastAPI:
     """
     Creates and initializes FastAPI application.
     """
+    settings = get_app_settings()
+
     settings.configure_logging()
 
     application = FastAPI(**settings.fastapi_kwargs)

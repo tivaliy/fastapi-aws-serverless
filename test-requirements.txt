@@ -1,3 +1,4 @@
 -r requirements.txt
 
 pytest>=6.2.0,<7.0.0  # https://github.com/pytest-dev/pytest
+moto==2.3.1  # https://github.com/spulec/moto
