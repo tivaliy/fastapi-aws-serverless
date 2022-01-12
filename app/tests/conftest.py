@@ -37,9 +37,8 @@ def pool_name() -> str:
 
 @pytest.fixture(scope="session")
 def user_pool_id(cognito_idp_client: BaseClient, pool_name: str) -> str:
-    return cognito_idp_client.create_user_pool(PoolName=pool_name, UsernameAttributes=["email"])[
-        "UserPool"
-    ]["Id"]
+    response = cognito_idp_client.create_user_pool(PoolName=pool_name, UsernameAttributes=["email"])
+    return response["UserPool"]["Id"]
 
 
 @pytest.fixture(scope="session")
@@ -62,21 +61,22 @@ def test_user_auth_data(
 
 
 @pytest.fixture
-def id_token(cognito_idp_client: BaseClient, app_client_id: str, test_user_auth_data) -> str:
+def auth_results(cognito_idp_client: BaseClient, app_client_id: str, test_user_auth_data) -> Dict:
     return cognito_idp_client.initiate_auth(
         ClientId=app_client_id,
         AuthFlow="USER_PASSWORD_AUTH",
         AuthParameters=test_user_auth_data,
-    )["AuthenticationResult"]["IdToken"]
+    )["AuthenticationResult"]
 
 
 @pytest.fixture
-def access_token(cognito_idp_client: BaseClient, app_client_id: str, test_user_auth_data) -> str:
-    return cognito_idp_client.initiate_auth(
-        ClientId=app_client_id,
-        AuthFlow="USER_PASSWORD_AUTH",
-        AuthParameters=test_user_auth_data,
-    )["AuthenticationResult"]["AccessToken"]
+def id_token(auth_results) -> str:
+    return auth_results["IdToken"]
+
+
+@pytest.fixture
+def access_token(auth_results) -> str:
+    return auth_results["AccessToken"]
 
 
 @pytest.fixture
