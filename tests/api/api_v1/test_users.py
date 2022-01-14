@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 from starlette import status
 
 from app.core.settings.app import AppSettings
-from app.tests.helpers.users import FAKE_USER_LIST
+from tests.helpers.users import FAKE_USER_LIST
 
 
 @pytest.fixture(params=("", "value", "Token value", "JWT value", "Bearer value"))

@@ -34,3 +34,6 @@ samconfig.toml
 # Ignor .env files
 .env
 .prod.env
+
+# Pytest
+.pytest_cache

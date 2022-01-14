@@ -5,7 +5,7 @@ from fastapi_cloudauth.cognito import CognitoClaims
 
 from app import schemas
 from app.api.deps import admin_scoped_auth, get_current_user
-from app.tests.helpers.users import FAKE_USER_LIST
+from tests.helpers.users import FAKE_USER_LIST
 
 router = APIRouter()
 

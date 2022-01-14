@@ -10,7 +10,7 @@ from moto import mock_cognitoidp
 from app.core.config import get_app_settings
 from app.core.settings.app import AppSettings
 from app.schemas.users import UserAuth
-from app.tests.helpers.utils import random_email, random_lower_string
+from tests.helpers.utils import random_email, random_lower_string
 
 # Set "test" settings environment
 environ["APP_ENV"] = "test"
