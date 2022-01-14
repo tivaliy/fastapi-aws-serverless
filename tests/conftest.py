@@ -44,7 +44,13 @@ def user_pool_id(cognito_idp_client: BaseClient, pool_name: str) -> str:
 @pytest.fixture(scope="session")
 def app_client_id(cognito_idp_client: BaseClient, user_pool_id: str, pool_name: str) -> str:
     return cognito_idp_client.create_user_pool_client(
-        UserPoolId=user_pool_id, ClientName=pool_name, GenerateSecret=False
+        UserPoolId=user_pool_id,
+        ClientName=pool_name,
+        GenerateSecret=False,
+        # The moto library doesn't support "cognito:username" claim in idToken and token validation
+        # process fails. So let's pass it explicitly as an extra user attribute that
+        # will be available in Cognito idToken
+        ReadAttributes=["cognito:username"],
     )["UserPoolClient"]["ClientId"]
 
 
@@ -55,7 +61,12 @@ def user_auth(
     username = random_email()
     password = random_lower_string()
 
-    cognito_idp_client.sign_up(ClientId=app_client_id, Username=username, Password=password)
+    cognito_idp_client.sign_up(
+        ClientId=app_client_id,
+        Username=username,
+        Password=password,
+        UserAttributes=[{"Name": "cognito:username", "Value": username}],
+    )
     cognito_idp_client.admin_confirm_sign_up(UserPoolId=user_pool_id, Username=username)
     auth_results = cognito_idp_client.initiate_auth(
         ClientId=app_client_id,
@@ -77,7 +88,12 @@ def admin_user_auth(
     username = random_email()
     password = random_lower_string()
 
-    cognito_idp_client.sign_up(ClientId=app_client_id, Username=username, Password=password)
+    cognito_idp_client.sign_up(
+        ClientId=app_client_id,
+        Username=username,
+        Password=password,
+        UserAttributes=[{"Name": "cognito:username", "Value": username}],
+    )
     cognito_idp_client.admin_confirm_sign_up(UserPoolId=user_pool_id, Username=username)
     cognito_idp_client.create_group(GroupName=admin_group_name, UserPoolId=user_pool_id)
     cognito_idp_client.admin_add_user_to_group(
