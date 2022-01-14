@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 from starlette import status
 
 from app.core.settings.app import AppSettings
+from app.tests.helpers.users import FAKE_USER_LIST
 
 
 @pytest.fixture(params=("", "value", "Token value", "JWT value", "Bearer value"))
@@ -27,18 +28,31 @@ def test_user_can_not_retrieve_own_profile_if_wrong_token(
 
 
 def test_user_can_retrieve_own_profile(
-    client: TestClient, id_token: str, settings: AppSettings
+    client: TestClient, user_auth, settings: AppSettings
 ) -> None:
     client.get(
         f"{settings.api_v1_prefix}/users/me",
-        headers={"Authorization": f"{settings.jwt_token_prefix} {id_token}"},
+        headers={"Authorization": f"{settings.jwt_token_prefix} {user_auth.id_token}"},
     )
     # assert r.status_code == status.HTTP_200_OK
 
 
-def test_user_can_list_users(client: TestClient, access_token: str, settings: AppSettings) -> None:
-    client.get(
+def test_regular_user_can_not_list_users(
+    client: TestClient, user_auth, settings: AppSettings
+) -> None:
+    r = client.get(
         f"{settings.api_v1_prefix}/users",
-        headers={"Authorization": f"{settings.jwt_token_prefix} {access_token}"},
+        headers={"Authorization": f"{settings.jwt_token_prefix} {user_auth.access_token}"},
     )
-    # assert r.status_code == status.HTTP_200_OK
+    assert r.status_code == status.HTTP_403_FORBIDDEN
+
+
+def test_admin_user_can_list_users(
+    client: TestClient, admin_user_auth, settings: AppSettings
+) -> None:
+    r = client.get(
+        f"{settings.api_v1_prefix}/users",
+        headers={"Authorization": f"{settings.jwt_token_prefix} {admin_user_auth.access_token}"},
+    )
+    assert r.status_code == status.HTTP_200_OK
+    assert r.json() == FAKE_USER_LIST

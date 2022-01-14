@@ -1,5 +1,4 @@
 from os import environ
-from typing import Dict
 
 import boto3
 import pytest
@@ -10,6 +9,7 @@ from moto import mock_cognitoidp
 
 from app.core.config import get_app_settings
 from app.core.settings.app import AppSettings
+from app.schemas.users import UserAuth
 from app.tests.helpers.utils import random_email, random_lower_string
 
 # Set "test" settings environment
@@ -48,35 +48,45 @@ def app_client_id(cognito_idp_client: BaseClient, user_pool_id: str, pool_name: 
     )["UserPoolClient"]["ClientId"]
 
 
-@pytest.fixture
-def test_user_auth_data(
-    cognito_idp_client: BaseClient, user_pool_id: str, app_client_id: str
-) -> Dict[str, str]:
+@pytest.fixture(scope="session")
+def user_auth(cognito_idp_client: BaseClient, user_pool_id: str, app_client_id: str) -> UserAuth:
     username = random_email()
     password = random_lower_string()
 
     cognito_idp_client.sign_up(ClientId=app_client_id, Username=username, Password=password)
     cognito_idp_client.admin_confirm_sign_up(UserPoolId=user_pool_id, Username=username)
-    return {"USERNAME": username, "PASSWORD": password}
-
-
-@pytest.fixture
-def auth_results(cognito_idp_client: BaseClient, app_client_id: str, test_user_auth_data) -> Dict:
-    return cognito_idp_client.initiate_auth(
+    auth_results = cognito_idp_client.initiate_auth(
         ClientId=app_client_id,
         AuthFlow="USER_PASSWORD_AUTH",
-        AuthParameters=test_user_auth_data,
+        AuthParameters={"USERNAME": username, "PASSWORD": password},
     )["AuthenticationResult"]
+    return UserAuth(**auth_results)
 
 
-@pytest.fixture
-def id_token(auth_results) -> str:
-    return auth_results["IdToken"]
+@pytest.fixture(scope="session")
+def admin_group_name():
+    return "admins"
 
 
-@pytest.fixture
-def access_token(auth_results) -> str:
-    return auth_results["AccessToken"]
+@pytest.fixture(scope="session")
+def admin_user_auth(
+    cognito_idp_client: BaseClient, user_pool_id: str, app_client_id: str, admin_group_name: str
+) -> UserAuth:
+    username = random_email()
+    password = random_lower_string()
+
+    cognito_idp_client.sign_up(ClientId=app_client_id, Username=username, Password=password)
+    cognito_idp_client.admin_confirm_sign_up(UserPoolId=user_pool_id, Username=username)
+    cognito_idp_client.create_group(GroupName=admin_group_name, UserPoolId=user_pool_id)
+    cognito_idp_client.admin_add_user_to_group(
+        UserPoolId=user_pool_id, Username=username, GroupName=admin_group_name
+    )
+    auth_results = cognito_idp_client.initiate_auth(
+        ClientId=app_client_id,
+        AuthFlow="USER_PASSWORD_AUTH",
+        AuthParameters={"USERNAME": username, "PASSWORD": password},
+    )["AuthenticationResult"]
+    return UserAuth(**auth_results)
 
 
 @pytest.fixture
