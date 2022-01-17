@@ -7,9 +7,9 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from moto import mock_cognitoidp
 
-from app import schemas
 from app.core.config import get_app_settings
 from app.core.settings.app import AppSettings
+from tests.helpers.schemas import UserAuth
 from tests.helpers.utils import random_email, random_lower_string
 
 # Set "test" settings environment
@@ -55,9 +55,7 @@ def app_client_id(cognito_idp_client: BaseClient, user_pool_id: str, pool_name: 
 
 
 @pytest.fixture(scope="session")
-def user_auth(
-    cognito_idp_client: BaseClient, user_pool_id: str, app_client_id: str
-) -> schemas.UserAuth:
+def user_auth(cognito_idp_client: BaseClient, user_pool_id: str, app_client_id: str) -> UserAuth:
     username = random_email()
     password = random_lower_string()
 
@@ -73,7 +71,7 @@ def user_auth(
         AuthFlow="USER_PASSWORD_AUTH",
         AuthParameters={"USERNAME": username, "PASSWORD": password},
     )["AuthenticationResult"]
-    return schemas.UserAuth(**auth_results)
+    return UserAuth(**auth_results)
 
 
 @pytest.fixture(scope="session")
@@ -84,7 +82,7 @@ def admin_group_name():
 @pytest.fixture(scope="session")
 def admin_user_auth(
     cognito_idp_client: BaseClient, user_pool_id: str, app_client_id: str, admin_group_name: str
-) -> schemas.UserAuth:
+) -> UserAuth:
     username = random_email()
     password = random_lower_string()
 
@@ -104,7 +102,7 @@ def admin_user_auth(
         AuthFlow="USER_PASSWORD_AUTH",
         AuthParameters={"USERNAME": username, "PASSWORD": password},
     )["AuthenticationResult"]
-    return schemas.UserAuth(**auth_results)
+    return UserAuth(**auth_results)
 
 
 @pytest.fixture
