@@ -1,9 +1,11 @@
 import logging
 import os
 import sys
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, Type
 
+from fastapi_cloudauth.cognito import CognitoClaims
 from loguru import logger
+from pydantic import BaseModel
 
 from app.core.logging import InterceptHandler
 from app.core.settings.base import BaseAppSettings
@@ -28,6 +30,8 @@ class AppSettings(BaseAppSettings):
     aws_region: str = os.getenv("AWS_REGION")
     userpool_id: str = os.getenv("USERPOOL_ID")
     app_client_id: str = os.getenv("APP_CLIENT_ID")
+
+    user_info_class: Type[BaseModel] = CognitoClaims  # use default CognitoClaims schema
 
     class Config:
         validate_assignment = True

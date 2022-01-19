@@ -10,7 +10,7 @@ from moto import mock_cognitoidp
 from app.core.config import get_app_settings
 from app.core.settings.app import AppSettings
 from tests.helpers.schemas import UserAuth
-from tests.helpers.utils import random_email, random_lower_string
+from tests.helpers.users import create_cognito_user
 
 # Set "test" settings environment
 environ["APP_ENV"] = "test"
@@ -50,21 +50,14 @@ def app_client_id(cognito_idp_client: BaseClient, user_pool_id: str, pool_name: 
         # The moto library doesn't support "cognito:username" claim in idToken and token validation
         # process fails. So let's pass it explicitly as an extra user attribute that
         # will be available in Cognito idToken
-        ReadAttributes=["cognito:username"],
+        ReadAttributes=["cognito:username", "nickname"],
     )["UserPoolClient"]["ClientId"]
 
 
 @pytest.fixture(scope="session")
 def user_auth(cognito_idp_client: BaseClient, user_pool_id: str, app_client_id: str) -> UserAuth:
-    username = random_email()
-    password = random_lower_string()
+    nickname, username, password = create_cognito_user(cognito_idp_client, app_client_id)
 
-    cognito_idp_client.sign_up(
-        ClientId=app_client_id,
-        Username=username,
-        Password=password,
-        UserAttributes=[{"Name": "cognito:username", "Value": username}],
-    )
     cognito_idp_client.admin_confirm_sign_up(UserPoolId=user_pool_id, Username=username)
     auth_results = cognito_idp_client.initiate_auth(
         ClientId=app_client_id,
@@ -83,15 +76,8 @@ def admin_group_name():
 def admin_user_auth(
     cognito_idp_client: BaseClient, user_pool_id: str, app_client_id: str, admin_group_name: str
 ) -> UserAuth:
-    username = random_email()
-    password = random_lower_string()
+    nickname, username, password = create_cognito_user(cognito_idp_client, app_client_id)
 
-    cognito_idp_client.sign_up(
-        ClientId=app_client_id,
-        Username=username,
-        Password=password,
-        UserAttributes=[{"Name": "cognito:username", "Value": username}],
-    )
     cognito_idp_client.admin_confirm_sign_up(UserPoolId=user_pool_id, Username=username)
     cognito_idp_client.create_group(GroupName=admin_group_name, UserPoolId=user_pool_id)
     cognito_idp_client.admin_add_user_to_group(

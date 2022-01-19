@@ -6,3 +6,9 @@ class UserAuth(BaseModel):
     access_token: str = Field(..., alias="AccessToken")
     refresh_token: str = Field(..., alias="RefreshToken")
     expires_in: str = Field(..., alias="ExpiresIn")
+
+
+class CustomCognitoClaims(BaseModel):
+    nickname: str = Field(..., alias="nickname")
+    username: str = Field(None, alias="cognito:username")
+    email: str = Field(None, alias="email")

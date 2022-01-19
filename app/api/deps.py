@@ -36,4 +36,6 @@ async def get_current_user(
         userPoolId=settings.userpool_id,
         client_id=settings.app_client_id,
     )
+    # Set custom Cognito claims class with extra attributes
+    current_user_auth.user_info = settings.user_info_class
     return await current_user_auth(http_auth)
