@@ -1,6 +1,6 @@
 # fastapi-aws-serverless
 
-FastAPI + Amazon API Gateway + Lambda - simple demo application
+FastAPI + Amazon API Gateway + AWS Lambda + Cognito - Simple Demo Application
 
 
 ## Prerequisites
