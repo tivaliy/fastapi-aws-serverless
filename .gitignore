@@ -37,3 +37,4 @@ samconfig.toml
 
 # Pytest
 .pytest_cache
+.coverage

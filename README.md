@@ -36,6 +36,20 @@ By default, service will be available on the following routes:
   [installation instructions]: https://docs.docker.com/install/#supported-platforms
   [installation guide]: https://docs.docker.com/compose/install/
 
+## Run tests
+
+Create isolated Python environment `virtualenv venv` and activate it `source venv/bin/activate`
+
+Install all necessary dependencies: `pip install -r test-requirements.txt`
+
+Run tests:
+
+    pytest tests -v  # increase verbosity
+
+with coverage report:
+
+    pytest --cov=app tests
+
 
 ## Build the Stack
 
