@@ -1,13 +1,13 @@
 # FastAPI
 # --------------------------------------------------------------------------------------------------
-fastapi==0.71.0  # https://github.com/tiangolo/fastapi
+fastapi==0.72.0  # https://github.com/tiangolo/fastapi
 fastapi-mqtt==0.4.0  # https://github.com/sabuhish/fastapi-mqtt
 
 # Adapter for using ASGI applications with AWS Lambda & API Gateway
 mangum==0.12.3  #  https://github.com/jordaneremieff/mangum
 
 pydantic==1.9.0  # https://github.com/samuelcolvin/pydantic
-uvicorn==0.16.0  # https://github.com/encode/uvicorn
+uvicorn==0.17.0  # https://github.com/encode/uvicorn
 python-dotenv==0.19.2  # https://github.com/theskumar/python-dotenv
 
 # Logging
