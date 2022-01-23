@@ -1,7 +1,7 @@
 import logging
 import os
 import sys
-from typing import Any, Dict, Tuple, Type
+from typing import Any, Dict, List, Tuple, Type
 
 from fastapi_cloudauth.cognito import CognitoClaims
 from loguru import logger
@@ -22,6 +22,8 @@ class AppSettings(BaseAppSettings):
     version: str = "0.0.1"
 
     jwt_token_prefix: str = "Bearer"
+
+    allowed_hosts: List[str] = ["*"]
 
     logging_level: int = logging.INFO
     loggers: Tuple[str, str] = ("uvicorn.asgi", "uvicorn.access")

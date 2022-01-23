@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from mangum import Mangum
+from starlette.middleware.cors import CORSMiddleware
 
 from app.api.api_v1.api import api_router
 from app.core.config import get_app_settings
@@ -18,8 +19,15 @@ def create_application() -> FastAPI:
 
     application.include_router(api_router, prefix=settings.api_v1_prefix)
 
-    # Configure middlewares
+    # Configure middleware
     application.add_middleware(AWSAPIGatewayMiddleware)
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.allowed_hosts,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     return application
 
