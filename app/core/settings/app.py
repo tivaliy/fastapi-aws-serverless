@@ -1,7 +1,7 @@
 import logging
 import os
 import sys
-from typing import Any, Dict, List, Tuple, Type
+from typing import Any, Dict, List, Optional, Tuple, Type
 
 from fastapi_cloudauth.cognito import CognitoClaims
 from loguru import logger
@@ -29,9 +29,9 @@ class AppSettings(BaseAppSettings):
     loggers: Tuple[str, str] = ("uvicorn.asgi", "uvicorn.access")
 
     # Cognito settings
-    aws_region: str = os.getenv("AWS_REGION")
-    userpool_id: str = os.getenv("USERPOOL_ID")
-    app_client_id: str = os.getenv("APP_CLIENT_ID")
+    aws_region: Optional[str] = os.getenv("AWS_REGION")
+    userpool_id: Optional[str] = os.getenv("USERPOOL_ID")
+    app_client_id: Optional[str] = os.getenv("APP_CLIENT_ID")
 
     user_info_class: Type[BaseModel] = CognitoClaims  # use default CognitoClaims schema
 

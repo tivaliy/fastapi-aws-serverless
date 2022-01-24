@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 @router.get("", response_model=List[schemas.User], dependencies=[Depends(admin_scoped_auth)])
-def read_users():
+def read_users() -> List[schemas.User]:
     # Generate fake user list
     return FAKE_USER_LIST
 

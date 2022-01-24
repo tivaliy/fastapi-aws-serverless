@@ -38,3 +38,6 @@ samconfig.toml
 # Pytest
 .pytest_cache
 .coverage
+
+# mypy
+.mypy_cache/

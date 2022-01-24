@@ -24,7 +24,7 @@ class AWSAPIGatewayMiddleware(BaseHTTPMiddleware):
         root_path = request.scope["root_path"]
         if root_path:
             # Assume set correctly in this case
-            self.app.root_path = root_path
+            self.app.root_path = root_path  # type: ignore
 
         else:
             # fetch from AWS requestContext

@@ -6,5 +6,5 @@ router = APIRouter()
 
 
 @router.get("", response_model=Dict[str, str])
-def ping():
+def ping() -> Dict[str, str]:
     return {"ping": "pong"}

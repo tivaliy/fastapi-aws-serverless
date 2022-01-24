@@ -20,7 +20,7 @@ async def auth(
 
 
 async def admin_scoped_auth(
-    cognito_auth: auth = Depends(),
+    cognito_auth: Cognito = Depends(auth),
     http_auth: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer(auto_error=False)),
 ) -> List[str]:
     cognito_auth.scope_name = ["admins"]

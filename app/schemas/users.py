@@ -11,7 +11,7 @@ class UserBase(BaseModel):
 
 
 class UserInDBBase(UserBase):
-    id: str = None
+    id: Optional[str] = None
 
 
 # Additional properties to return via API

@@ -38,8 +38,11 @@ repos:
     rev: v0.910
     hooks:
       - id: mypy
-        entry: bash -c 'mypy "$@" || true' --
+        # use 'mypy "$@" || true' to ignore exit code
+        entry: bash -c 'mypy "$@"' --
         args: [ "--no-strict-optional", "--ignore-missing-imports" ]
+        additional_dependencies:
+          - 'pydantic'
   - repo: https://github.com/aws-cloudformation/cfn-python-lint
     rev: v0.56.2
     hooks:
