@@ -5,10 +5,17 @@ FastAPI + Amazon API Gateway + AWS Lambda + Cognito - Simple Demo Application
 
 ## Prerequisites
 
+### for Deployment:
+
 - AWS Account
 - AWS Command Line Tool (CLI) - `aws` [aws cli installation guide]
 - AWS Serverless Application Model (SAM) with a command line tool AWS SAM CLI - `sam` [sam cli installation guide]
 
+### for Development:
+
+- Docker; if you don't have it yet, follow the [installation instructions];
+- Docker Compose; refer to the official documentation for the [installation guide].
+- Pre-commit; refer to the official documentation for the [pre-commit](https://pre-commit.com/#install).
 
 ## Getting Up and Running Locally with Docker
 
@@ -33,10 +40,7 @@ By default, service will be available on the following routes:
     http://0.0.0.0:8888/openapi.json
 
 
-  [installation instructions]: https://docs.docker.com/install/#supported-platforms
-  [installation guide]: https://docs.docker.com/compose/install/
-
-## Run tests
+## Run tests and type checking
 
 Create isolated Python environment `virtualenv venv` and activate it `source venv/bin/activate`
 
@@ -50,6 +54,9 @@ with coverage report:
 
     pytest --cov=app tests
 
+Run type checking:
+
+    mypy app
 
 ## Build the Stack
 
@@ -93,3 +100,5 @@ For deleting the Stack run:
 
   [aws cli installation guide]: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html
   [sam cli installation guide]: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html
+  [installation instructions]: https://docs.docker.com/install/#supported-platforms
+  [installation guide]: https://docs.docker.com/compose/install/
