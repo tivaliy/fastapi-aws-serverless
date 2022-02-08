@@ -98,7 +98,8 @@ Resources:
       RestApiId: !Ref FastAPIGateway
       DomainName: !Ref ApiDomainName
       BasePath: '(none)'
-      Stage: !Ref EnvType
+      # https://github.com/aws/serverless-application-model/issues/192
+      Stage: !Ref FastAPIGateway.Stage
 
   CognitoUserPool:
     Type: AWS::Cognito::UserPool
