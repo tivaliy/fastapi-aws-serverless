@@ -1,20 +1,19 @@
 # FastAPI
 # --------------------------------------------------------------------------------------------------
-fastapi==0.72.0  # https://github.com/tiangolo/fastapi
-fastapi-mqtt==0.4.0  # https://github.com/sabuhish/fastapi-mqtt
+fastapi==0.75.1  # https://github.com/tiangolo/fastapi
 
 # Adapter for using ASGI applications with AWS Lambda & API Gateway
-mangum==0.12.3  #  https://github.com/jordaneremieff/mangum
+mangum==0.14.1  #  https://github.com/jordaneremieff/mangum
 
 pydantic==1.9.0  # https://github.com/samuelcolvin/pydantic
-uvicorn==0.17.0  # https://github.com/encode/uvicorn
-python-dotenv==0.19.2  # https://github.com/theskumar/python-dotenv
+uvicorn==0.17.6  # https://github.com/encode/uvicorn
+python-dotenv==0.20.0  # https://github.com/theskumar/python-dotenv
 
 # AWS boto3
-boto3==1.20.40  # https://github.com/boto/boto3
+boto3==1.21.35  # https://github.com/boto/boto3
 
 # Logging
-loguru==0.5.3  # https://github.com/Delgan/loguru
+loguru==0.6.0  # https://github.com/Delgan/loguru
 
 # Cognito Auth
 fastapi-cloudauth==0.4.3  # https://github.com/tokusumi/fastapi-cloudauth
