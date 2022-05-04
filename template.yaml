@@ -24,7 +24,7 @@ Parameters:
     # We cannot use optional parameter in CloudFormation for AWS Specific Parameters
     # Type: AWS::Route53::HostedZone::Id
     Type: String
-    Description: Route 53 Hosted zonde ID value.
+    Description: Route 53 Hosted zone ID value.
     Default: ''
 
   AdminsGroupName:
@@ -38,18 +38,18 @@ Conditions:
       - !Equals
         - !Ref DomainName
         - ''
-  UseExistingHoztedZone:
+  UseExistingHostedZone:
     !Not
       - !Equals
         - !Ref HostedZoneIdValue
         - ''
-  NotUseExistingHoztedZone:
+  NotUseExistingHostedZone:
     !Not
-      - Condition: UseExistingHoztedZone
+      - Condition: UseExistingHostedZone
   CreateNewHostedZone:
     !And
       - !Condition UseDomainName
-      - !Condition NotUseExistingHoztedZone
+      - !Condition NotUseExistingHostedZone
 
 
 Resources:
@@ -66,7 +66,7 @@ Resources:
       DomainName: !Sub '*.${DomainName}'
       DomainValidationOptions:
         - DomainName: !Ref DomainName
-          HostedZoneId: !If [UseExistingHoztedZone, !Ref HostedZoneIdValue , !Ref Route53HostedZone]
+          HostedZoneId: !If [ UseExistingHostedZone, !Ref HostedZoneIdValue , !Ref Route53HostedZone]
       ValidationMethod: DNS
       SubjectAlternativeNames:
         - !Ref DomainName
