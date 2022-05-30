@@ -19,6 +19,7 @@ FastAPI + Amazon API Gateway + AWS Lambda + Cognito - Simple Demo Application
 
 ## Getting Up and Running Locally with Docker
 
+Create `.env` file (see `.env.example`) for more details.
 Open a terminal at the project root and run the following for local development:
 
   - Build the Stack:
