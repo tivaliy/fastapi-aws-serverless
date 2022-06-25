@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from fastapi import Depends
+from fastapi import Depends, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi_cloudauth.cognito import Cognito, CognitoCurrentUser
 
@@ -8,15 +8,11 @@ from app.core.config import get_app_settings
 from app.core.settings.app import AppSettings
 
 
-async def auth(
-    settings: AppSettings = Depends(get_app_settings),
-) -> Cognito:
-    cognito_auth = Cognito(
-        region=settings.aws_region,
-        userPoolId=settings.userpool_id,
-        client_id=settings.app_client_id,
-    )
-    return cognito_auth
+async def auth(request: Request) -> Cognito:
+    """
+    Fetches Cognito Auth from the App context.
+    """
+    return request.app.state.auth
 
 
 async def admin_scoped_auth(

@@ -5,6 +5,7 @@ from starlette.middleware.cors import CORSMiddleware
 from app.api.api_v1.api import api_router
 from app.api.health import health_router
 from app.core.config import get_app_settings
+from app.core.events import create_start_app_handler
 from app.core.middleware import AWSAPIGatewayMiddleware
 
 
@@ -29,6 +30,11 @@ def create_application() -> FastAPI:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+    )
+
+    application.add_event_handler(
+        "startup",
+        create_start_app_handler(application, settings),
     )
 
     return application
